@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook Stuff</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<script src="{{ url_for('static', filename='js/dynamic.js') }}"></script>
+</head>
+<body>
+    <h1>
+        Cook stuff from the food you have
+    </h1>
+    <h2>
+        Take a picture of your ingredients
+    </h2>
+    
+    <form method=post>
+        <label for="ingredients">ingredients, seperated by a comma:</label>
+        <input type="text" id="ingredients" name="ingredients"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <p id="errorAlert" class="alert alert-danger" style="display: none;"></p>
+    <div id="recipes">
+
+    </div>
+</body>
+</html>
