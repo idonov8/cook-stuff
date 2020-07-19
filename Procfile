@@ -1,1 +1,1 @@
-web: python3 webapp:app
+web: webapp:app
