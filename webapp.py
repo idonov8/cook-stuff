@@ -28,6 +28,7 @@ def home():
 @app.route('/getRecipe', methods=['POST'])
 def getRecipe():
 
+    ingredients = []
     # Handle image file
     if 'image' not in request.files:
         print("did not recive a file")
@@ -38,19 +39,21 @@ def getRecipe():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # A call to clarifai
+        image = ClImage(filename=UPLOAD_FOLDER+'/'+ filename)
+        prediction = model.predict([image])
+        print(prediction)
+        for ingredient in prediction['outputs'][0]['data']['concepts']:
+            ingredients.append(ingredient['name'])
+
+        # TODO: add delete file after use
     else:
         pass # TODO: handle error
 
-    # A call to clarifai
-    image = ClImage(filename=UPLOAD_FOLDER+'/'+ filename)
-    prediction = model.predict([image])
-    ingredients = []
-    print(prediction)
-    for ingredient in prediction['outputs'][0]['data']['concepts']:
-        ingredients.append(ingredient['name'])
 
 
-    #ingredients = request.form['ingredients']
+    ingredients.append(request.form['ingredients'])
 
     # Get recipe from spoonacular
     if ingredients:
