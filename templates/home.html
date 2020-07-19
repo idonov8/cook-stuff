@@ -24,6 +24,9 @@
     <form>
         <label for="ingredients">ingredients, seperated by a comma:</label>
         <input type="text" id="ingredients" name="ingredients"><br><br>
+        <label for="image">Select image:</label>
+        <input type="file" id="image" name="image" accept="image/*">
+        <img id="preview" src="#" alt="your ingredients" height=300 style='display: none;'/>
         <input type="submit" value="Submit">
     </form>
     <p id="errorAlert" class="alert alert-danger" style="display: none;"></p>
