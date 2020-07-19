@@ -49,8 +49,6 @@ $(document).ready(() => {
                     console.log(data)
                 }
             });
-        
-        $("body").appendChild(formData.get('image'));
         $recipes.text("Loading...").show();
         event.preventDefault();
     });
