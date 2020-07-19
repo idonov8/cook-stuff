@@ -130,9 +130,3 @@ dmypy.json
 
 # Visual Studio Code
 .vscode
-
-# Files
-*.jpg
-*.png
-*.jpeg
-*.gif
