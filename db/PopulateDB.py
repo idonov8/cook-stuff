@@ -5,7 +5,7 @@ from datetime import datetime
 feedback = Feedback(
     date = datetime.strptime('2020-07-20', '%Y-%m-%d'),
     full_name = 'Ido Nov',
-    content = 'test feedback, The you can see feedbacks! thats great'
+    content = 'test feedback, you can see feedbacks! thats great'
 )
 
 # models.Base.metadata.create_all(bind=engine)

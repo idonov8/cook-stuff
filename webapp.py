@@ -97,7 +97,8 @@ def manager():
 
 @app.route('/manager/logout')
 def logout():
-    del login_session['admin']
+    if 'admin' in login_session:
+        del login_session['admin']
     return redirect(url_for('manager'))
 
 if __name__ == '__main__':

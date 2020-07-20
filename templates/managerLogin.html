@@ -11,6 +11,7 @@
     <title>Login</title>
 </head>
 <body>
+  <div class="container card" style="width: 24rem; margin-top: 10rem;">
     <form method='post'>   
         <div class="form-group">
           <label for="pass">Password</label> 
@@ -18,12 +19,13 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+    
       <br>
       {% if error %}
         <div class="alert alert-danger" role="alert">
             {{error}}
         </div>
         {% endif %}
-
+    </div>
 </body>
 </html>

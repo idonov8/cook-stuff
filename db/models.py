@@ -10,7 +10,6 @@ class Feedback(Base):
     full_name = Column(String)
     content = Column(String)
 
-Base.metadata.create_all(engine)
 
 
     
