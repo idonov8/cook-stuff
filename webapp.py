@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import requests
 import os
 from dotenv import load_dotenv
 from clarifai.rest import ClarifaiApp, Image as ClImage
 from werkzeug.utils import secure_filename
+from db.models import *
+from db.database import session
 
 load_dotenv()
 SPOONACULAR_KEY = os.getenv("SPOONACULAR_KEY")
@@ -75,7 +77,17 @@ def getRecipe():
     print('error lol')
     return jsonify(error="No ingredients were supplied!")
 
-
+@app.route('/manager', methods=['GET', 'POST'])
+def manager():
+    if request.method=='GET':
+        # if 'admin' in session['username']:
+        feedbacks = session.query(Feedback).all()
+        return render_template('feedbackView.html', feedbacks=feedbacks)
+        # return render_template('managerLogin.html')
+    else:
+        username = request.form['username']
+        password = request.form['password']
+        
 
 if __name__ == '__main__':
     app.run(debug=True)
