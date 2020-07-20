@@ -11,6 +11,15 @@
     <title>Feedback</title>
 </head>
 <body>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">
+                Welcome Back, Manager!
+            </h1>
+            <p class="lead">Take a look at some feedback</p>
+        </div>
+    </div>
+
     {%for feedback in feedbacks%}
     <div class="card" style="width: 18rem;">
         <div class="card-body">
@@ -20,5 +29,9 @@
         </div>
       </div>
     {%endfor%}
+      <br>
+    <form action="{{url_for('logout')}}">   
+        <button type="submit" class="btn btn-primary">Logout</button>
+      </form>
 </body>
 </html>

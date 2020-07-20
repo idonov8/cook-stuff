@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session as login_session, flash, redirect, url_for
 import requests
 import os
 from dotenv import load_dotenv
@@ -10,6 +10,8 @@ from db.database import session
 load_dotenv()
 SPOONACULAR_KEY = os.getenv("SPOONACULAR_KEY")
 CLARIFAI_KEY = os.getenv("CLARIFAI_KEY")
+MANAGER_PASS = os.getenv("MANAGER_PASS")
+
 UPLOAD_FOLDER = 'static/Pictures'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -18,6 +20,7 @@ model = clarifai_app.models.get('food-items-v1.0')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'not_so_secret'
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -29,7 +32,6 @@ def home():
 
 @app.route('/getRecipe', methods=['POST'])
 def getRecipe():
-
     ingredients = []
     # Handle image file
     if 'image' not in request.files:
@@ -79,15 +81,24 @@ def getRecipe():
 
 @app.route('/manager', methods=['GET', 'POST'])
 def manager():
-    if request.method=='GET':
-        # if 'admin' in session['username']:
+    error=None
+    if request.method=='POST':
+        password = request.form['password']
+        if password == MANAGER_PASS:
+            login_session['admin'] = True
+            feedbacks = session.query(Feedback).all()
+            return render_template('feedbackView.html', feedbacks=feedbacks)
+        else:
+            error = 'Wrong Password'
+    if 'admin' in login_session:
         feedbacks = session.query(Feedback).all()
         return render_template('feedbackView.html', feedbacks=feedbacks)
-        # return render_template('managerLogin.html')
-    else:
-        username = request.form['username']
-        password = request.form['password']
-        
+    return render_template('managerLogin.html', error=error)
+
+@app.route('/manager/logout')
+def logout():
+    del login_session['admin']
+    return redirect(url_for('manager'))
 
 if __name__ == '__main__':
     app.run(debug=True)
