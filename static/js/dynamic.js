@@ -74,6 +74,7 @@ $(document).ready(() => {
                 if (data.error) {
                     $('#feedbackErrorAlert').text(data.error).show();
                 } else {
+                    $(this).trigger('reset');;
                     $('#modal').modal('hide');
                 }
             },
