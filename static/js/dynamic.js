@@ -21,11 +21,15 @@ $(document).ready(() => {
             '<img src={{image}} class="card-img-top" alt="...">'+
                 '<div class="card-body">'+
                     '<h5 class="card-title">{{title}}</h5>'+
-                    '<p class="card-text">There are <strong> {{missedIngredientCount}} </strong> additional ingredients that you will need'//</p>'+
-                    '<a href="#" class="btn btn-primary">Go somewhere</a>'+
+                    '<p class="card-text">There are <strong> {{missedIngredientCount}} </strong> additional ingredients that you will need</p>'+
+                    '<div class="recipe-content" style="display: none;" id="{{id}}">'+
+                    '</div>'+
                 '</div>'+
             '</div>'+
         '</div>';
+
+    const ingredientTemplate = ''+
+    '<p class="card-text">- {{original}} </p>';
 
     const $recipes = $('#recipes')
     $('#ingredientsForm').on('submit', function(event){
@@ -44,8 +48,16 @@ $(document).ready(() => {
                     $recipes.hide()
                 } else {
                     $recipes.empty();
-                    $.each(data.recipes, (index, element) => {
-                        $recipes.append(Mustache.render(recipeTemplate, element));
+                    $.each(data.recipes, (index, recipe) => {
+                        $recipes.append(Mustache.render(recipeTemplate, recipe));
+                        $("#"+recipe.id).append('<h5 class=card-subtitle>Missed Ingredients:</h5>');
+                        $.each(recipe.missedIngredients, (index, ingredient) => {
+                            $("#"+recipe.id).append(Mustache.render(ingredientTemplate, ingredient))
+                        })
+                        $("#"+recipe.id).append('<h5 class=card-subtitle>Used Ingredients:</h5>');
+                        $.each(recipe.usedIngredients, (index, ingredient) => {
+                            $("#"+recipe.id).append(Mustache.render(ingredientTemplate, ingredient))
+                        })
                     });
                     $recipes.slideDown();
                     $('#errorAlert').hide()
@@ -84,8 +96,7 @@ $(document).ready(() => {
             }
         });
     });
-    $recipes.delegate('.recipeTitle', 'click', function () {
-        console.log("clicked", $(this));
-        $('#' + $(this).attr('data-id')).toggle(1000);
+    $recipes.delegate('.card', 'click', function (event) {
+        $(this).find('.recipe-content:first').toggle(300);
     });
 });
