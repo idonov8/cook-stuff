@@ -104,7 +104,6 @@ def logout():
 
 @app.route('/sendFeedback',  methods=['POST'])
 def sendFeedback():
-    print("got here")
     date = datetime.today()
     name = request.form['name']
     content = request.form['content']
@@ -114,6 +113,12 @@ def sendFeedback():
         return jsonify(success='Feedback sent!')
     else: 
         return jsonify(error="Missing argument")
+
+@app.route('/manager/delete/<int:id>', methods=['DELETE'])
+def deleteFeedback(id):
+    session.query(Feedback).filter_by(id=id).delete()
+    session.commit()
+    return jsonify(success='feedback deleted!')
 
 if __name__ == '__main__':
     app.run(debug=True)

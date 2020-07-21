@@ -62,7 +62,6 @@ $(document).ready(() => {
     $('#feedback').on('submit', function(event){
         event.preventDefault();
         const formData = new FormData(this);
-        $('#modal').modal('hide');
         $.ajax({
             data: formData,
             type: 'POST',
