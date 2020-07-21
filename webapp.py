@@ -6,6 +6,7 @@ from clarifai.rest import ClarifaiApp, Image as ClImage
 from werkzeug.utils import secure_filename
 from db.models import *
 from db.database import session
+from datetime import datetime
 
 load_dotenv()
 SPOONACULAR_KEY = os.getenv("SPOONACULAR_KEY")
@@ -100,6 +101,19 @@ def logout():
     if 'admin' in login_session:
         del login_session['admin']
     return redirect(url_for('manager'))
+
+@app.route('/sendFeedback',  methods=['POST'])
+def sendFeedback():
+    print("got here")
+    date = datetime.today()
+    name = request.form['name']
+    content = request.form['content']
+    if name and content:
+        session.add(Feedback(date=date, name=name, content=content))
+        session.commit()
+        return jsonify(success='Feedback sent!')
+    else: 
+        return jsonify(error="Missing argument")
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -7,8 +7,10 @@ class Feedback(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date)
-    full_name = Column(String)
+    name = Column(String)
     content = Column(String)
+
+Base.metadata.create_all(engine)
 
 
 

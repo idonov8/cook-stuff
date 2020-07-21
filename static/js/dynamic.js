@@ -16,11 +16,6 @@ $(document).ready(() => {
       });
 
     const recipeTemplate = '' +
-        // '<h3 class="recipeTitle" data-id={{id}}> {{title}} </h3>' +
-        // '<div class="recipeContent" id={{id}} style="display: none;">' +
-        // '<img src={{image}} width=300>' +
-        // '<h4> There are <strong> {{missedIngredientCount}} </strong> additional ingredients that you will need' +
-        // '</div>'+
         '<div class="col-sm-4">'+
             '<div class="card" style="width: 18rem;">'+
             '<img src={{image}} class="card-img-top" alt="...">'+
@@ -33,7 +28,7 @@ $(document).ready(() => {
         '</div>';
 
     const $recipes = $('#recipes')
-    $('form').on('submit', function(event){
+    $('#ingredientsForm').on('submit', function(event){
         event.preventDefault();
         const formData = new FormData(this);
         $.ajax({
@@ -64,6 +59,31 @@ $(document).ready(() => {
       '</div>').show();
     });
 
+    $('#feedback').on('submit', function(event){
+        event.preventDefault();
+        const formData = new FormData(this);
+        $('#modal').modal('hide');
+        $.ajax({
+            data: formData,
+            type: 'POST',
+            url: '/sendFeedback',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) => {
+                console.log("got data");
+                if (data.error) {
+                    $('#feedbackErrorAlert').text(data.error).show();
+                } else {
+                    $('#modal').modal('hide');
+                }
+            },
+            error: () => {
+                alert("feedback wasn't sent")
+
+            }
+        });
+    });
     $recipes.delegate('.recipeTitle', 'click', function () {
         console.log("clicked", $(this));
         $('#' + $(this).attr('data-id')).toggle(1000);

@@ -4,7 +4,7 @@ from datetime import datetime
 
 feedback = Feedback(
     date = datetime.strptime('2020-07-20', '%Y-%m-%d'),
-    full_name = 'Ido Nov',
+    name = 'Ido Nov',
     content = 'test feedback, you can see feedbacks! thats great'
 )
 
