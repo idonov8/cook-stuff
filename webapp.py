@@ -75,7 +75,7 @@ def getRecipe():
         results = r.json() 
         title = results[0]['title']
         print(title)
-        return jsonify(recipes=results)
+        return jsonify(recipes=results, ingredients=ingredients)
 
     print('error lol')
     return jsonify(error="No ingredients were supplied!")
