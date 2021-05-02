@@ -48,7 +48,8 @@ $(document).ready(() => {
                     $recipes.hide()
                 } else {
                     $recipes.empty();
-                    $('#ingredientsForm').append("<p>Detected Ingredients: "+data.ingredients+"</p> <br>")
+                    $('#detectedIngredients').empty();
+                    $('#detectedIngredients').append("<h3>Detected Ingredients:</h3> <p>"+data.ingredients+"</p> <br>")
                     $.each(data.recipes, (index, recipe) => {
                         $recipes.append(Mustache.render(recipeTemplate, recipe));
                         $("#"+recipe.id).append('<h5 class=card-subtitle>Missed Ingredients:</h5>');

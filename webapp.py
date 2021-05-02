@@ -2,11 +2,17 @@ from flask import Flask, render_template, request, jsonify, session as login_ses
 import requests
 import os
 from dotenv import load_dotenv
-from clarifai.rest import ClarifaiApp, Image as ClImage
 from werkzeug.utils import secure_filename
 from db.models import *
 from db.database import session
 from datetime import datetime
+from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+from clarifai_grpc.grpc.api import service_pb2, resources_pb2
+from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+from clarifai_grpc.grpc.api import service_pb2_grpc
+from clarifai_grpc.grpc.api.status import status_code_pb2
+
+stub = service_pb2_grpc.V2Stub(ClarifaiChannel.get_grpc_channel())
 
 load_dotenv()
 SPOONACULAR_KEY = os.getenv("SPOONACULAR_KEY")
@@ -15,9 +21,7 @@ MANAGER_PASS = os.getenv("MANAGER_PASS")
 
 UPLOAD_FOLDER = 'static/Pictures'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-clarifai_app = ClarifaiApp(api_key=CLARIFAI_KEY)
-model = clarifai_app.models.get('food-items-v1.0')
+metadata = (('authorization', 'Key '+ CLARIFAI_KEY),)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -46,11 +50,29 @@ def getRecipe():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # A call to clarifai
-        image = ClImage(filename=UPLOAD_FOLDER+'/'+ filename)
-        prediction = model.predict([image])
-        print(prediction)
-        for ingredient in prediction['outputs'][0]['data']['concepts']:
-            ingredients.append(ingredient['name'])
+        imageURL = UPLOAD_FOLDER+'/'+ filename
+        with open(imageURL, "rb") as f:
+            file_bytes = f.read()
+
+        print(imageURL)
+        APIrequest = service_pb2.PostModelOutputsRequest(
+            model_id='bd367be194cf45149e75f01d59f77ba7',
+            inputs=[
+                resources_pb2.Input(data=resources_pb2.Data(
+                    image=resources_pb2.Image(
+                        base64=file_bytes
+                    )
+                ))
+            ]
+        )
+        response = stub.PostModelOutputs(APIrequest, metadata=metadata)
+
+        if response.status.code != status_code_pb2.SUCCESS:
+            raise Exception("Request failed, status code: " + str(response.status.code))
+
+        for ingredient in response.outputs[0].data.concepts:
+            print('%12s: %.2f' % (ingredient.name, ingredient.value))
+            ingredients.append(ingredient.name)
 
         # TODO: add delete file after use
     else:
